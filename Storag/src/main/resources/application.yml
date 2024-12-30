@@ -1,0 +1,74 @@
+nacos-server-addr: 127.0.0.1:8848
+
+server:
+  port: 8083
+  servlet:
+    context-path: /storage
+spring:
+  application:
+    name: Storage-Service #客户端名称
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos-server-addr} # 配置注册中心
+        username: nacos
+        password: 123@#nacos
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://127.0.0.1:3306/storage?useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 0
+      maximum-pool-size: 15
+      minimum-idle: 5
+      pool-name: DatebookHikariCP
+ribbon:
+  OkToRetryOnAllOperations: false #对所有操作请求都进行重试,默认false
+  ReadTimeout: 5000   #负载均衡超时时间，默认值5000
+  ConnectTimeout: 3000 #ribbon请求连接的超时时间，默认值2000
+  MaxAutoRetries: 0     #对当前实例的重试次数，默认0
+  MaxAutoRetriesNextServer: 1 #对切换实例的重试次数，默认1
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+seata:
+  # 开启自动装配
+  enabled: true
+  # 本客户端的微服务名称
+  application-id: ${spring.application.name}
+  # 读取哪个事务分组
+  tx-service-group: my_test_tx_group
+  # 配置中心设置
+  config:
+    type: nacos
+    nacos:
+      # nacos 的ip和端口
+      server-addr: ${nacos-server-addr}
+      # 与上面的命名空间相同
+      namespace: a008c0da-b5d6-407d-afdb-d37072d5fdc9
+      # 读取的配置分组
+      group: SEATA_GROUP
+      username: nacos
+      password: 123@#nacos
+  # 注册中心设置
+  registry:
+    type: nacos
+    nacos:
+      # SEATA服务中心的微服务名，此处与服务端保持一致
+      application: seata-server
+      # nacos 的ip和端口
+      server-addr: ${nacos-server-addr}
+      # 与上面的命名空间相同
+      namespace:  a008c0da-b5d6-407d-afdb-d37072d5fdc9
+      # 读取的配置分组
+      group: SEATA_GROUP
+      username: nacos
+      password: 123@#nacos

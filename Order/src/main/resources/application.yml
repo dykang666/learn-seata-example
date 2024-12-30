@@ -1,0 +1,74 @@
+nacos-server-addr: 127.0.0.1:8848
+
+server:
+  port: 8082
+  servlet:
+    context-path: /order
+spring:
+  application:
+    name: Order-Service #?????
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://${nacos-server-addr} # ??????
+        username: nacos
+        password: 123@#nacos
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://127.0.0.1:3306/order?useUnicode=true&characterEncoding=utf8&useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 0
+      maximum-pool-size: 15
+      minimum-idle: 5
+      pool-name: DatebookHikariCP
+ribbon:
+  OkToRetryOnAllOperations: false #????????????,??false
+  ReadTimeout: 5000   #????????????5000
+  ConnectTimeout: 3000 #ribbon?????????????2000
+  MaxAutoRetries: 0     #?????????????0
+  MaxAutoRetriesNextServer: 1 #?????????????1
+
+seata:
+  # ??????
+  enabled: true
+  # ??????????
+  application-id: ${spring.application.name}
+  # ????????
+  tx-service-group: my_test_tx_group
+  # ??????
+  config:
+    type: nacos
+    nacos:
+      # nacos ?ip???
+      server-addr: ${nacos-server-addr}
+      # ??????????
+      namespace:  a008c0da-b5d6-407d-afdb-d37072d5fdc9
+      # ???????
+      group: SEATA_GROUP
+      username: nacos
+      password: 123@#nacos
+  # ??????
+  registry:
+    type: nacos
+    nacos:
+      # SEATA????????????????????
+      application: seata-server
+      # nacos ?ip???
+      server-addr: ${nacos-server-addr}
+      # ??????????
+      namespace:  a008c0da-b5d6-407d-afdb-d37072d5fdc9
+      # ???????
+      group: SEATA_GROUP
+      username: nacos
+      password: 123@#nacos
+
+logging:
+  level:
+    pers.kerry.seata.demo.orderservice.mapper: debug
